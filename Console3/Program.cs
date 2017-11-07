@@ -32,7 +32,7 @@ namespace Console3
             }
             else if (tran.Type == TransactionType.Withdraw && tran.Amount >= 1000)
             {
-                Console.WriteLine($"It wasn't me.");
+                Console.WriteLine($"TransactionID:{TransactionID} rejected, It wasn't me.");
                 return false;
             }
             Console.WriteLine($"TransactionID:{TransactionID} Approved");

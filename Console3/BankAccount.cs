@@ -10,14 +10,26 @@ namespace Console3
     {
         public string Number { get; }
         public string Owner { get; set; }
-        public decimal Balance { get; private set; }
+        private decimal startingBalance;
+        public decimal Balance { get
+            { decimal currentBalance = startingBalance;
+                foreach (var tran in Transactions)
+                {
+                    if (tran.Value.Type == TransactionType.Deposit)
+                    { currentBalance += tran.Value.Amount; }
+                    else
+                    { currentBalance -= tran.Value.Amount; }
+                }
+                return currentBalance;
+            }
+         }
         private static int account = 1000000;
         SortedDictionary<DateTime,Transaction> Transactions = 
             new SortedDictionary<DateTime,Transaction>();
         public BankAccount(string name, decimal initialDeposit)
         {
             Owner = name;
-            Balance = initialDeposit;
+            startingBalance = initialDeposit;
             Number = BankAccount.account++.ToString();
         }
 
@@ -33,7 +45,7 @@ namespace Console3
         }
 
         public void MakeDeposit(decimal amount, DateTime date, string note) {
-            this.Balance += amount;
+         
             var tran = new Transaction { Amount = amount, Note = note, Type = TransactionType.Deposit };
             Transactions.Add(date,tran);
             if (ReportTransaction != null)
@@ -47,14 +59,12 @@ namespace Console3
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Customer Rejected");
-                    this.Balance -= amount;
                     Transactions.Remove(date);
                 }
             }
 
         }
         public void MakeWithdraw(decimal amount, DateTime date, string payee, string note) {
-            this.Balance -= amount;
             var tran = new Transaction { Amount = amount, Note = note, Type = TransactionType.Withdraw };
             Transactions.Add(date, tran);
             if (ReportTransaction != null)
@@ -63,13 +73,14 @@ namespace Console3
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Customer Confirmed");
+                    Console.ResetColor();
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Customer Rejected");
-                    this.Balance += amount;
                     Transactions.Remove(date);
+                    Console.ResetColor();
                 }
             }
         }
