@@ -1,12 +1,12 @@
-﻿namespace Console3
+﻿namespace Accounts
 {
-    internal class Transaction
+    public class Transaction
     {
         public TransactionType Type { get; set; }
         public decimal Amount { get; set; }
         public string Note { get; set; }
     }
-    enum TransactionType
+    public enum TransactionType
     {
          Deposit,
          Withdraw

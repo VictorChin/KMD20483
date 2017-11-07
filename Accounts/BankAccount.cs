@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Console3
+namespace Accounts
 {
-    class BankAccount 
+    public class BankAccount 
     {
         public string Number { get; }
         public string Owner { get; set; }
@@ -33,7 +33,7 @@ namespace Console3
             Number = BankAccount.account++.ToString();
         }
 
-        internal void PrintStatement()
+        public void PrintStatement()
         {
             foreach (var item in Transactions)
             {
@@ -44,45 +44,18 @@ namespace Console3
             }
         }
 
-        public void MakeDeposit(decimal amount, DateTime date, string note) {
-         
-            var tran = new Transaction { Amount = amount, Note = note, Type = TransactionType.Deposit };
-            Transactions.Add(date,tran);
-            if (ReportTransaction != null)
-            {
-                if (ReportTransaction(tran, Transactions.Count))
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Customer Confirmed");
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Customer Rejected");
-                    Transactions.Remove(date);
-                }
-            }
+        public void MakeDeposit(decimal amount, DateTime date, string note)
+        {
 
+            var tran = new Transaction { Amount = amount, Note = note, Type = TransactionType.Deposit };
+            Transactions.Add(date, tran);
+            Notify(date, tran);
         }
         public void MakeWithdraw(decimal amount, DateTime date, string payee, string note) {
             var tran = new Transaction { Amount = amount, Note = note, Type = TransactionType.Withdraw };
             Transactions.Add(date, tran);
-            if (ReportTransaction != null)
-            {
-                if (ReportTransaction(tran, Transactions.Count))
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Customer Confirmed");
-                    Console.ResetColor();
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Customer Rejected");
-                    Transactions.Remove(date);
-                    Console.ResetColor();
-                }
-            }
+            Notify(date, tran);
+
         }
         public override string ToString()
         {
@@ -91,6 +64,25 @@ namespace Console3
 
         public Func<Transaction, int, bool> ReportTransaction;
         //public Action<Transaction, int> ReportTransaction;
+        private void Notify(DateTime date, Transaction tran)
+        {
+            if (ReportTransaction != null)
+            {
+                if (ReportTransaction(tran, Transactions.Count))
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Customer Confirmed");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Customer Rejected");
+                    Transactions.Remove(date);
+                    Console.ResetColor();
+                }
+            }
+        }
 
     }
 }
