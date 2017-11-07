@@ -88,5 +88,19 @@ namespace Accounts
             }
         }
 
+        public override bool Equals(object obj)
+        {
+            if ((obj is BankAccount))
+            {
+                BankAccount theOtherAccount = (BankAccount)obj;
+                if ((this.Owner == theOtherAccount.Owner) &&
+                    (this.Balance == theOtherAccount.Balance))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 }
