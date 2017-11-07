@@ -34,6 +34,14 @@ namespace ConsoleApp2
             {
                 Console.WriteLine(item);
             }
+
+            int y = int.MaxValue;
+            long x = y;
+            Console.WriteLine(x+7);
+            int a = (int)(x+7);
+            Console.WriteLine(a);
+            y = 100;
+            Console.WriteLine(y.ToString("C"));
         }
     }
 }
