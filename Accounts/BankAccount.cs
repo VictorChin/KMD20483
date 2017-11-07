@@ -52,6 +52,10 @@ namespace Accounts
             Notify(date, tran);
         }
         public void MakeWithdraw(decimal amount, DateTime date, string payee, string note) {
+            if (amount > this.Balance)
+            {
+                throw new OverdrawnException(this,amount);
+            }
             var tran = new Transaction { Amount = amount, Note = note, Type = TransactionType.Withdraw };
             Transactions.Add(date, tran);
             Notify(date, tran);
