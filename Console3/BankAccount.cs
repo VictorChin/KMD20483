@@ -47,6 +47,7 @@ namespace Console3
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Customer Rejected");
+                    this.Balance -= amount;
                     Transactions.Remove(date);
                 }
             }
@@ -67,6 +68,7 @@ namespace Console3
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Customer Rejected");
+                    this.Balance += amount;
                     Transactions.Remove(date);
                 }
             }
