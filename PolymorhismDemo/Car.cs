@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PolymorhismDemo
 {
-    abstract class Car : IComparable<Car>,IDisposable
+    abstract class Car : IComparable<Car>, IDisposable, ICar
     {
         public virtual void Drive() { Console.WriteLine("Car Driving"); }
         public virtual void Drive(int x) { Console.WriteLine($"Car Driving:{x}"); }

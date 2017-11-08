@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Car.cs" />
     <Compile Include="Garage.cs" />
+    <Compile Include="ICar.cs" />
     <Compile Include="LuxurySedan.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
