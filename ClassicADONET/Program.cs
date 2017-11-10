@@ -18,7 +18,14 @@ namespace ClassicADONET
                 conn.Open();
                 string query = "Select * from SalesLT.Product";
                 SqlCommand cmd = new SqlCommand(query, conn);
-                SqlDataReader reader = cmd.ExecuteReader();
+                //SqlDataReader reader = cmd.ExecuteReader();
+                Task<SqlDataReader> theTask = cmd.ExecuteReaderAsync();
+                while (!theTask.IsCompleted)
+                {
+                    Console.Write(".");
+
+                }
+                SqlDataReader reader = theTask.Result;
                 List<ProdPrice> prodList = new List<ProdPrice>();
                 while (reader.Read())
                 {
