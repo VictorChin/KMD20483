@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace EFDemo
 {
+    class SampleAttribute : Attribute
+    {
+    }
     class Program
     {
+        [Sample]
         static void Main(string[] args)
         {
             MyDbContext ctx = new MyDbContext();
@@ -15,6 +20,12 @@ namespace EFDemo
             //GroupingCompanyByInitial(ctx);
             //FollowRelationshipsToCountOrders(ctx);
             //AddCustomerIncomplete(ctx);
+            Assembly[] assemblies =  AppDomain.CurrentDomain.GetAssemblies();
+           
+            foreach (var item in assemblies)
+            {
+                Console.WriteLine(item.Location);
+            }
 
         }
 
