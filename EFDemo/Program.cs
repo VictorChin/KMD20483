@@ -13,14 +13,35 @@ namespace EFDemo
             MyDbContext ctx = new MyDbContext();
             //ModifyMiddleName(ctx);
             //GroupingCompanyByInitial(ctx);
-            var q = from c in ctx.SalesLT_Customers.Include("SalesLT_SalesOrderHeaders")
+            //FollowRelationshipsToCountOrders(ctx);
+            //AddCustomerIncomplete(ctx);
+
+        }
+
+        private static void AddCustomerIncomplete(MyDbContext ctx)
+        {
+            SalesLT_Customer newCustomer = new SalesLT_Customer()
+            {
+                CompanyName = "AAA",
+                EmailAddress = "email@email.com",
+                FirstName = "Bob",
+                LastName = "Smith",
+                Title = "Boss",
+                Phone = "5551212"
+            };
+            ctx.SalesLT_Customers.Add(newCustomer);
+            ctx.SaveChanges();
+        }
+
+        private static void FollowRelationshipsToCountOrders(MyDbContext ctx)
+        {
+            var q = from c in ctx.SalesLT_Customers
                     where c.CompanyName.StartsWith("A")
-                    select c;
+                    select new { customer = c, orders = c.SalesLT_SalesOrderHeaders };
             foreach (var item in q)
             {
-                Console.WriteLine($"{item.CompanyName} - {item.SalesLT_SalesOrderHeaders.Count}");
+                Console.WriteLine($"{item.customer.CompanyName} - {item.orders.Count}");
             }
-
         }
 
         private static void GroupingCompanyByInitial(MyDbContext ctx)
