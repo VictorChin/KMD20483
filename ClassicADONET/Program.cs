@@ -20,11 +20,12 @@ namespace ClassicADONET
                 SqlCommand cmd = new SqlCommand(query, conn);
                 //SqlDataReader reader = cmd.ExecuteReader();
                 Task<SqlDataReader> theTask = cmd.ExecuteReaderAsync();
+                Console.WriteLine(theTask.Status);
                 while (!theTask.IsCompleted)
                 {
                     Console.Write(".");
-
-                }
+                 }
+                Console.WriteLine(theTask.Status);
                 SqlDataReader reader = theTask.Result;
                 List<ProdPrice> prodList = new List<ProdPrice>();
                 while (reader.Read())

@@ -14,13 +14,20 @@ namespace LearnIO
     {
         static void Main(string[] args)
         {
-            //DriveInfoDemo();
+            Task t1 = Task.Factory.StartNew(()=>DriveInfoDemo());
             //DirectorInfoDemo();
-            //StreamWriterDemo();
-            //BinaryWriterDemo();
-            Serialize();
-            Deserialize();
+            Task t2 = Task.Factory.StartNew(() => StreamWriterDemo());
+            Task t3 = Task.Factory.StartNew(() => BinaryWriterDemo());
+            Task t4 = Task.Factory.StartNew(() => Serialize()).
+                ContinueWith((t) => Deserialize());
+            Task<long> t5 = GetFileLengthAsync(@"c:\samples\MyTest.txt");
+            Task[] allTasks = new Task[] { t1, t2, t3, t4};
+            Task.WaitAll(allTasks);
+            long t5result = t5.Result;
+            Console.WriteLine("All done, Press any key to close the program");
+            Console.ReadLine();
         }
+
         static void Serialize()
         {
             // Create a hashtable of values that will eventually be serialized.
@@ -116,17 +123,18 @@ namespace LearnIO
             using (FileStream fs = File.Create(path))
             {
                 StreamWriter sw = new StreamWriter(fs, new UTF8Encoding(true));
-                sw.WriteLine("This is some text");
-                sw.WriteLine("This is some more text,");
-                sw.WriteLine("\r\nand this is on a new line");
-                sw.WriteLine("\r\n\r\nThe following is a subset of characters:\r\n");
+               
+                    sw.WriteLine("This is some text");
+                    sw.WriteLine("This is some more text,");
+                    sw.WriteLine("\r\nand this is on a new line");
+                    sw.WriteLine("\r\n\r\nThe following is a subset of characters:\r\n");
 
-                for (int i = 1; i < 120; i++)
-                {
-                    sw.Write(Convert.ToChar(i).ToString());
-                }
-                sw.Flush();
-
+                    for (int i = 1; i < 120; i++)
+                    {
+                        sw.Write(Convert.ToChar(i).ToString());
+                    }
+                    sw.Flush();
+              
             }
 
             //Open the stream and read it back.
@@ -134,9 +142,12 @@ namespace LearnIO
             {
                 byte[] b = new byte[1024];
                 UTF8Encoding temp = new UTF8Encoding(true);
-                while (fs.Read(b, 0, b.Length) > 0)
+                lock (Console.Out)
                 {
-                    Console.WriteLine(temp.GetString(b));
+                    while (fs.Read(b, 0, b.Length) > 0)
+                    {
+                        Console.WriteLine(temp.GetString(b));
+                    }
                 }
             }
         }
@@ -159,7 +170,7 @@ namespace LearnIO
         private static void DriveInfoDemo()
         {
             DriveInfo[] allDrives = DriveInfo.GetDrives();
-
+            lock (Console.Out) {
             foreach (DriveInfo d in allDrives)
             {
                 Console.WriteLine("Drive {0}", d.Name);
@@ -181,6 +192,17 @@ namespace LearnIO
                         d.TotalSize);
                 }
             }
+            }
+        }
+
+        private static async Task<long> GetFileLengthAsync(string FileName)
+        {
+            return await Task<long>.Run(() => {
+                FileInfo aFile = new FileInfo(FileName);
+                System.Threading.Thread.Sleep(10000);
+                return aFile.Length;
+            }//end the delegate lambda
+            );//end the Run Method
         }
     }
 }
